@@ -1,7 +1,16 @@
 package cmd
 
 import (
+	"fmt"
+	"os"
+	"syscall"
 	"time"
+
+	"gopkg.in/src-d/go-git.v4/plumbing/transport"
+
+	"golang.org/x/crypto/ssh/terminal"
+
+	"gopkg.in/src-d/go-git.v4/plumbing/transport/http"
 
 	"github.com/d-kuro/kusa/log"
 	"github.com/spf13/cobra"
@@ -17,11 +26,12 @@ func init() {
 	kusaCmd.PersistentFlags().StringVarP(
 		&date, "date", "d", now.Format(layout), "date [format: yyyy-mm-dd]")
 	kusaCmd.PersistentFlags().StringVarP(
-		&repoDir, "repo", "r", "", "local directory path for clone GitHub repository")
+		&repoDir, "repo", "r", "",
+		"local directory path for clone GitHub repository (required)")
 	kusaCmd.PersistentFlags().StringVarP(
-		&commitMsg, "commit", "c", "草", "commit message")
+		&commitMsg, "commit", "c", ":herb:", "commit message")
 	kusaCmd.PersistentFlags().StringVarP(
-		&name, "name", "n", ":herb:", "commit author name")
+		&name, "name", "n", "kusa", "commit author name")
 	kusaCmd.PersistentFlags().StringVarP(
 		&mail, "mail", "m", "kusa@example.com", "commit author mail address")
 	rootCmd.AddCommand(kusaCmd)
@@ -66,8 +76,8 @@ func createKusa() error {
 	}
 
 	log.Info("execute commit",
-		zap.String("mame", name), zap.String("e-mail", mail), zap.String("date", date))
-
+		zap.String("mame", name), zap.String("e-mail", mail),
+		zap.String("date", date), zap.String("commit_message", commitMsg))
 	commit, err := wt.Commit(commitMsg, &git.CommitOptions{
 		Author: &object.Signature{
 			Name:  name,
@@ -79,16 +89,48 @@ func createKusa() error {
 		log.Error("commit error", zap.Error(err))
 		return err
 	}
-
 	log.Info("complete commit", zap.String("commit_hash", commit.String()))
-	log.Info("execute push", zap.String("repository", repoDir))
 
-	if err := repo.Push(&git.PushOptions{}); err != nil {
+	log.Info("input credential")
+	auth, err := inputCredentials()
+	if err != nil {
+		log.Error("failed read credentials", zap.Error(err))
+	}
+
+	log.Info("execute push", zap.String("repository", repoDir))
+	if err := repo.Push(&git.PushOptions{
+		Auth:     auth,
+		Progress: os.Stdout,
+	}); err != nil {
 		log.Error("push error", zap.Error(err))
 		return err
 	}
-
 	log.Info("complete push")
 
 	return nil
+}
+
+func inputCredentials() (transport.AuthMethod, error) {
+	fmt.Print("user name: ")
+	user, err := terminal.ReadPassword(syscall.Stdin)
+	// new line
+	fmt.Println()
+	if err != nil {
+		log.Error("failed read user name", zap.Error(err))
+		return nil, err
+	}
+
+	fmt.Print("password: ")
+	pass, err := terminal.ReadPassword(syscall.Stdin)
+	// new line
+	fmt.Println()
+	if err != nil {
+		log.Error("failed read password", zap.Error(err))
+		return nil, err
+	}
+
+	return &http.BasicAuth{
+		Username: string(user),
+		Password: string(pass),
+	}, nil
 }
