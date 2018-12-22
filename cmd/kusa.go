@@ -30,7 +30,7 @@ func init() {
 	kusaCmd.PersistentFlags().StringVarP(
 		&commitMsg, "commit", "c", ":herb: ʕ ◔ϖ◔ʔ :herb:", "commit message")
 	kusaCmd.PersistentFlags().StringVarP(
-		&name, "name", "n", "kusa", "commit author name")
+		&name, "name", "n", "ʕ ◔ϖ◔ʔ", "commit author name")
 	kusaCmd.PersistentFlags().StringVarP(
 		&mail, "mail", "m", "kusa@example.com", "commit author mail address")
 	rootCmd.AddCommand(kusaCmd)
