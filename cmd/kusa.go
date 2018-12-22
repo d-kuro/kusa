@@ -26,7 +26,7 @@ func init() {
 		&repoDir, "repo", "r", "",
 		"local directory path for clone GitHub repository (required)")
 	kusaCmd.PersistentFlags().StringVarP(
-		&commitMsg, "commit", "c", ":herb:", "commit message")
+		&commitMsg, "commit", "c", ":herb: ʕ ◔ϖ◔ʔ :herb:", "commit message")
 	kusaCmd.PersistentFlags().StringVarP(
 		&name, "name", "n", "kusa", "commit author name")
 	kusaCmd.PersistentFlags().StringVarP(
