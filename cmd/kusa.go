@@ -74,7 +74,7 @@ func createKusa() error {
 	}
 
 	log.Info("execute commit",
-		zap.String("mame", name), zap.String("e-mail", mail),
+		zap.String("name", name), zap.String("e-mail", mail),
 		zap.String("date", date), zap.String("commit_message", commitMsg))
 	commit, err := wt.Commit(commitMsg, &git.CommitOptions{
 		Author: &object.Signature{

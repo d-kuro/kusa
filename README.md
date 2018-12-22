@@ -48,7 +48,7 @@ Usage:
 
 Flags:
   -c, --commit string   commit message (default ":herb: ʕ ◔ϖ◔ʔ :herb:")
-  -d, --date string     date [format: yyyy-mm-dd] (default "2018-12-23")
+  -d, --date string     date [format: yyyy-mm-dd] (default "2018-12-23") // default is today
   -h, --help            help for create
   -m, --mail string     commit author mail address (default "kusa@example.com")
   -n, --name string     commit author name (default "ʕ ◔ϖ◔ʔ")
