@@ -17,8 +17,7 @@ func init() {
 var rootCmd = &cobra.Command{
 	Use: "kusa",
 	Run: func(cmd *cobra.Command, args []string) {
-		kusa := `
-_  _ _  _ ____ ____
+		kusa := `_  _ _  _ ____ ____
 |_/  |  | [__  |__|
 | \_ |__| ___] |  |`
 		fmt.Println(kusa)
