@@ -25,7 +25,7 @@ export PATH=$PATH:$GOPATH/bin
 
 >TODO
 
-```bash
+```text
 $ kusa -h
 Usage:
   kusa [flags]
@@ -39,7 +39,7 @@ Flags:
   -h, --help   help for kusa
 ```
 
-```bash
+```text
 $ kusa create -h
 Create GitHub contribution on date specified by date option
 
