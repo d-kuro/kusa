@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/d-kuro/kusa/log"
+	"go.uber.org/zap"
+
 	"github.com/spf13/cobra"
 )
 
@@ -12,9 +15,7 @@ func init() {
 }
 
 var rootCmd = &cobra.Command{
-	Use:   "kusa",
-	Short: "kusa is GitHub contributions create tool",
-	Long:  "By using kusa you can create GitHub contributions on any day.",
+	Use: "kusa",
 	Run: func(cmd *cobra.Command, args []string) {
 		kusa := `wʕ ◔ϖ◔ʔw
 _  _ _  _ ____ ____
@@ -26,7 +27,7 @@ _  _ _  _ ____ ____
 
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
+		log.Error("failed execute command", zap.Error(err))
 		os.Exit(1)
 	}
 }
