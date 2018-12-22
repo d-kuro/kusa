@@ -6,6 +6,8 @@ import (
 	"syscall"
 	"time"
 
+	"gopkg.in/src-d/go-git.v4/plumbing"
+
 	"github.com/d-kuro/kusa/log"
 	"github.com/spf13/cobra"
 	"go.uber.org/zap"
@@ -91,6 +93,9 @@ func createKusa() error {
 	auth, err := inputCredentials()
 	if err != nil {
 		log.Error("failed read credentials", zap.Error(err))
+		// rollback reset empty commit
+		rollbackCommit(wt, commit)
+		return err
 	}
 
 	log.Info("execute push", zap.String("repository", repoDir))
@@ -99,6 +104,8 @@ func createKusa() error {
 		Progress: os.Stdout,
 	}); err != nil {
 		log.Error("push error", zap.Error(err))
+		// rollback reset empty commit
+		rollbackCommit(wt, commit)
 		return err
 	}
 	log.Info("complete push")
@@ -129,4 +136,15 @@ func inputCredentials() (transport.AuthMethod, error) {
 		Username: string(user),
 		Password: string(pass),
 	}, nil
+}
+
+func rollbackCommit(wt *git.Worktree, commit plumbing.Hash) {
+	log.Info("rollback reset commit", zap.String("commit_hash", commit.String()))
+	if err := wt.Reset(&git.ResetOptions{
+		Commit: commit,
+	}); err != nil {
+		log.Error("failed rollback reset commit",
+			zap.String("commit_hash", commit.String()), zap.Error(err))
+	}
+	log.Info("complete reset commit", zap.String("commit_hash", commit.String()))
 }
