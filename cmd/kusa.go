@@ -65,7 +65,7 @@ func createKusa() error {
 		return err
 	}
 
-	time, err := time.Parse(layout, date)
+	time, err := time.ParseInLocation(layout, date, time.Local)
 	if err != nil {
 		log.Error("time parse error", zap.String("date", date), zap.Error(err))
 		return err
