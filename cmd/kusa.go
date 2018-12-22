@@ -6,17 +6,14 @@ import (
 	"syscall"
 	"time"
 
-	"gopkg.in/src-d/go-git.v4/plumbing/transport"
-
-	"golang.org/x/crypto/ssh/terminal"
-
-	"gopkg.in/src-d/go-git.v4/plumbing/transport/http"
-
 	"github.com/d-kuro/kusa/log"
 	"github.com/spf13/cobra"
 	"go.uber.org/zap"
+	"golang.org/x/crypto/ssh/terminal"
 	"gopkg.in/src-d/go-git.v4"
 	"gopkg.in/src-d/go-git.v4/plumbing/object"
+	"gopkg.in/src-d/go-git.v4/plumbing/transport"
+	"gopkg.in/src-d/go-git.v4/plumbing/transport/http"
 )
 
 const layout = "2006-01-02"
