@@ -43,12 +43,11 @@ var (
 	kusaCmd   = &cobra.Command{
 		Use:   "create",
 		Short: "Create GitHub contribution",
-		Long:  "kusa",
+		Long:  "Create GitHub contribution on date specified by date option",
 		Run: func(cmd *cobra.Command, args []string) {
 			if err := createKusa(); err != nil {
 				log.Error("create GitHub contribution error", zap.Error(err))
 			}
-
 		},
 	}
 )
