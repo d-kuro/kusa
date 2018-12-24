@@ -1,4 +1,4 @@
-FROM golangci-lint:v1.12.5
+FROM golangci/golangci-lint:v1.12.5
 
 LABEL "name"="GolangCI-Lint action"
 LABEL "maintainer"="Dai Kurosawa <kurosawa7620@gmail.com>"
