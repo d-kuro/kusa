@@ -21,9 +21,38 @@ Make sure your PATH includes the $GOPATH/bin directory so your commands can be e
 export PATH=$PATH:$GOPATH/bin
 ```
 
-## Usage
+## Quick Start
 
->TODO
+Use `kusa create` command to create a GitHub contribution.
+
+```bash
+$ kusa create --repo ./kusa --mail kusa@example.com --date 2018-12-24
+```
+
+Option:
+
+* `--repo (-r)`
+  * local directory path for clone GitHub repository (required)
+* `--mail (-m)`
+  * Your e-mail address.
+  * Notes: please use the email address registered on the [GitHub setting page](https://github.com/settings/emails).
+* `--date (-d)`
+  * Date to create GitHub contribution.
+  * Default is Today
+  * Format: yyyy-mm-dd
+
+Please input as you are prompted to enter user name and password.
+  
+```bash
+$ kusa create --repo ./kusa --mail kusa@example.com --date 2018-12-24
+...
+user name:
+password:
+```
+
+When input is completed push is done and GitHub contribution is created.
+
+### Help
 
 ```text
 $ kusa -h
@@ -54,3 +83,12 @@ Flags:
   -n, --name string     commit author name (default "ʕ ◔ϖ◔ʔ")
   -r, --repo string     local directory path for clone GitHub repository (required)
 ```
+
+## Todo
+
+* [ ] Testing
+* [ ] Create multiple GitHub contributions at once
+
+## License
+
+MIT License
