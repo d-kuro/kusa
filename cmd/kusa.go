@@ -6,7 +6,6 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/d-kuro/kusa/log"
 	"github.com/spf13/cobra"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/ssh/terminal"
@@ -47,7 +46,7 @@ var (
 		Long:  "Create GitHub contribution on date specified by date option",
 		Run: func(cmd *cobra.Command, args []string) {
 			if err := createKusa(); err != nil {
-				log.Error("create GitHub contribution error", zap.Error(err))
+				logger.Error("create GitHub contribution error", zap.Error(err))
 			}
 		},
 	}
@@ -56,23 +55,23 @@ var (
 func createKusa() error {
 	repo, err := git.PlainOpen(repoDir)
 	if err != nil {
-		log.Error("open git repository error", zap.String("dir_path", repoDir), zap.Error(err))
+		logger.Error("open git repository error", zap.String("dir_path", repoDir), zap.Error(err))
 		return err
 	}
 
 	wt, err := repo.Worktree()
 	if err != nil {
-		log.Error("failed to get work tree", zap.Error(err))
+		logger.Error("failed to get work tree", zap.Error(err))
 		return err
 	}
 
 	time, err := time.ParseInLocation(layout, date, time.Local)
 	if err != nil {
-		log.Error("time parse error", zap.String("date", date), zap.Error(err))
+		logger.Error("time parse error", zap.String("date", date), zap.Error(err))
 		return err
 	}
 
-	log.Info("execute commit",
+	logger.Info("execute commit",
 		zap.String("name", name), zap.String("e-mail", mail),
 		zap.String("date", date), zap.String("commit_message", commitMsg))
 	commit, err := wt.Commit(commitMsg, &git.CommitOptions{
@@ -83,31 +82,31 @@ func createKusa() error {
 		},
 	})
 	if err != nil {
-		log.Error("commit error", zap.Error(err))
+		logger.Error("commit error", zap.Error(err))
 		return err
 	}
-	log.Info("complete commit", zap.String("commit_hash", commit.String()))
+	logger.Info("complete commit", zap.String("commit_hash", commit.String()))
 
-	log.Info("input credential")
+	logger.Info("input credential")
 	auth, err := inputCredentials()
 	if err != nil {
-		log.Error("failed read credentials", zap.Error(err))
+		logger.Error("failed read credentials", zap.Error(err))
 		// rollback reset empty commit
 		rollbackCommit(wt, commit)
 		return err
 	}
 
-	log.Info("execute push", zap.String("repository", repoDir))
+	logger.Info("execute push", zap.String("repository", repoDir))
 	if err := repo.Push(&git.PushOptions{
 		Auth:     auth,
 		Progress: os.Stdout,
 	}); err != nil {
-		log.Error("push error", zap.Error(err))
+		logger.Error("push error", zap.Error(err))
 		// rollback reset empty commit
 		rollbackCommit(wt, commit)
 		return err
 	}
-	log.Info("complete push")
+	logger.Info("complete push")
 
 	return nil
 }
@@ -118,7 +117,7 @@ func inputCredentials() (transport.AuthMethod, error) {
 	// new line
 	fmt.Println()
 	if err != nil {
-		log.Error("failed read user name", zap.Error(err))
+		logger.Error("failed read user name", zap.Error(err))
 		return nil, err
 	}
 
@@ -127,7 +126,7 @@ func inputCredentials() (transport.AuthMethod, error) {
 	// new line
 	fmt.Println()
 	if err != nil {
-		log.Error("failed read password", zap.Error(err))
+		logger.Error("failed read password", zap.Error(err))
 		return nil, err
 	}
 
@@ -138,12 +137,12 @@ func inputCredentials() (transport.AuthMethod, error) {
 }
 
 func rollbackCommit(wt *git.Worktree, commit plumbing.Hash) {
-	log.Info("rollback reset commit", zap.String("commit_hash", commit.String()))
+	logger.Info("rollback reset commit", zap.String("commit_hash", commit.String()))
 	if err := wt.Reset(&git.ResetOptions{
 		Commit: commit,
 	}); err != nil {
-		log.Error("failed rollback reset commit",
+		logger.Error("failed rollback reset commit",
 			zap.String("commit_hash", commit.String()), zap.Error(err))
 	}
-	log.Info("complete reset commit", zap.String("commit_hash", commit.String()))
+	logger.Info("complete reset commit", zap.String("commit_hash", commit.String()))
 }
